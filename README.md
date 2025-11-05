@@ -1,4 +1,4 @@
-<img width="1914" height="910" alt="Screenshot 2025-11-05 135051" src="https://github.com/user-attachments/assets/418fe759-e8f3-4099-b9ef-3061b91ca410" />📦 MyDownloader
+📦 MyDownloader
 
 A web application for downloading videos from various websites like YouTube, Facebook Reels, etc., using `yt-dlp` as its core downloading engine.
 
