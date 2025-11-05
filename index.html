@@ -3,110 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Downloader v2 (3 Columns)</title>
+    <title>Web Downloader v3 (Direct Link)</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* เปลี่ยนเป็นชิดบน */
+            align-items: flex-start;
             min-height: 100vh;
             background-color: #f4f7f6;
             margin: 0;
-            padding: 30px; /* เพิ่มช่องว่างด้านบน */
+            padding: 30px;
         }
         .downloader-card {
             width: 90%;
-            /* ⭐️ 1. ขยายการ์ดให้กว้างขึ้นเพื่อรองรับ 3 คอลัมน์ ⭐️ */
             max-width: 900px; 
             background: #ffffff;
             padding: 2rem;
             border-radius: 10px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
-        h2 {
-            text-align: center;
-            color: #333;
-            margin-top: 0;
-        }
-
-        /* ⭐️ 2. เพิ่ม CSS สำหรับ Grid Container ⭐️ */
+        h2 { text-align: center; color: #333; margin-top: 0; }
         .input-grid-container {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr; /* สร้าง 3 คอลัมน์เท่าๆ กัน */
-            gap: 1rem; /* ช่องว่างระหว่างคอลัมน์และแถว */
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
         }
-
-        .form-group {
-            /* ⭐️ 3. เอา margin-bottom เดิมออก (Grid 'gap' จะจัดการแทน) ⭐️ */
-            margin-bottom: 0; 
-        }
-        
+        .form-group { margin-bottom: 0; }
         input[type="text"] {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box; 
+            width: 100%; padding: 0.75rem; border: 1px solid #ddd;
+            border-radius: 5px; box-sizing: border-box; 
         }
         button {
-            width: 100%;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-top: 1.5rem; /* เพิ่มช่องว่างบนปุ่มเล็กน้อย */
+            width: 100%; padding: 0.8rem; border: none; border-radius: 5px;
+            background-color: #007bff; color: white; font-size: 1rem;
+            font-weight: 600; cursor: pointer; transition: background-color 0.2s;
+            margin-top: 1.5rem;
         }
-        button:hover {
-            background-color: #0056b3;
-        }
+        button:hover { background-color: #0056b3; }
 
-        /* ⭐️ ส่วนแสดงสถานะ (เหมือนเดิม) ⭐️ */
+        /* ⭐️ 1. แก้ไขส่วนแสดงสถานะ (จะง่ายขึ้น) ⭐️ */
         #statusArea {
             margin-top: 2rem;
             border-top: 1px solid #eee;
             padding-top: 1rem;
         }
-        .progress-item {
-            margin-bottom: 1rem;
-        }
-        .progress-item-info {
+        .status-item {
+            padding: 0.5rem;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
             font-size: 0.9rem;
-            color: #555;
-            margin-bottom: 0.25rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis; 
         }
-        .progress-bar-container {
-            width: 100%;
-            background-color: #e9ecef;
-            border-radius: 5px;
-            height: 20px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            width: 0%; 
-            height: 100%;
-            background-color: #28a745; 
-            transition: width 0.3s ease;
-            text-align: center;
-            color: white;
-            font-size: 0.8rem;
-            line-height: 20px;
-            font-weight: bold;
-        }
-        
-        .progress-bar.status-downloading { background-color: #007bff; }
-        .progress-bar.status-finished { background-color: #28a745; }
-        .progress-bar.status-error { background-color: #dc3545; }
-        .progress-bar.status-pending { background-color: #6c757d; }
-
+        .status-pending { background-color: #e9ecef; color: #555; }
+        .status-success { background-color: #d4edda; color: #155724; }
+        .status-error { background-color: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
@@ -115,171 +68,100 @@
         <h2>Downloader (3 คอลัมน์)</h2>
         
         <div class="input-grid-container">
-
-            <div class="form-group">
-                <input type="text" id="urlInput1" placeholder="วางลิงก์ (URL) ที่ 1">
-            </div>
-            <div class="form-group">
-                <input type="text" id="urlInput2" placeholder="วางลิงก์ (URL) ที่ 2">
-            </div>
-            <div class="form-group">
-                <input type="text" id="urlInput3" placeholder="วางลิงก์ (URL) ที่ 3">
-            </div>
-            <div class="form-group">
-                <input type="text" id="urlInput4" placeholder="วางลิงก์ (URL) ที่ 4">
-            </div>
-            <div class="form-group">
-                <input type="text" id="urlInput5" placeholder="วางลิงก์ (URL) ที่ 5">
-            </div>
-            
-            <div class="form-group">
-                <input type="text" id="urlInput6" placeholder="วางลิงก์ (URL) ที่ 6">
-            </div>
-            <div class="form-group">
-                <input type="text" id="urlInput7" placeholder="วางลิงก์ (URL) ที่ 7">
-            </div>
-            <div class="form-group">
-                <input type="text" id="urlInput8" placeholder="วางลิงก์ (URL) ที่ 8">
-            </div>
-            <div class="form-group">
-                <input type="text" id="urlInput9" placeholder="วางลิงก์ (URL) ที่ 9">
-            </div>
-            <div class="form-group">
-                <input type="text" id="urlInput10" placeholder="วางลิงก์ (URL) ที่ 10">
-            </div>
-
-            <div class="form-group">
-                <input type="text" id="urlInput11" placeholder="วางลิงก์ (URL) ที่ 11">
-            </div>
-            <div class="form-group">
-                <input type="text" id="urlInput12" placeholder="วางลิงก์ (URL) ที่ 12">
-            </div>
-            <div class="form-group">
-                <input type="text" id="urlInput13" placeholder="วางลิงก์ (URL) ที่ 13">
-            </div>
-            <div class="form-group">
-                <input type="text" id="urlInput14" placeholder="วางลิงก์ (URL) ที่ 14">
-            </div>
-            <div class="form-group">
-                <input type="text" id="urlInput15" placeholder="วางลิงก์ (URL) ที่ 15">
-            </div>
+            <div class="form-group"><input type="text" id="urlInput1" placeholder="วางลิงก์ (URL) ที่ 1"></div>
+            <div class="form-group"><input type="text" id="urlInput2" placeholder="วางลิงก์ (URL) ที่ 2"></div>
+            <div class="form-group"><input type="text" id="urlInput3" placeholder="วางลิงก์ (URL) ที่ 3"></div>
+            <div class="form-group"><input type="text" id="urlInput4" placeholder="วางลิงก์ (URL) ที่ 4"></div>
+            <div class="form-group"><input type="text" id="urlInput5" placeholder="วางลิงก์ (URL) ที่ 5"></div>
+            <div class="form-group"><input type="text" id="urlInput6" placeholder="วางลิงก์ (URL) ที่ 6"></div>
+            <div class="form-group"><input type="text" id="urlInput7" placeholder="วางลิงก์ (URL) ที่ 7"></div>
+            <div class="form-group"><input type="text" id="urlInput8" placeholder="วางลิงก์ (URL) ที่ 8"></div>
+            <div class="form-group"><input type="text" id="urlInput9" placeholder="วางลิงก์ (URL) ที่ 9"></div>
+            <div class="form-group"><input type="text" id="urlInput10" placeholder="วางลิงก์ (URL) ที่ 10"></div>
+            <div class="form-group"><input type="text" id="urlInput11" placeholder="วางลิงก์ (URL) ที่ 11"></div>
+            <div class="form-group"><input type="text" id="urlInput12" placeholder="วางลิงก์ (URL) ที่ 12"></div>
+            <div class="form-group"><input type="text" id="urlInput13" placeholder="วางลิงก์ (URL) ที่ 13"></div>
+            <div class="form-group"><input type="text" id="urlInput14" placeholder="วางลิงก์ (URL) ที่ 14"></div>
+            <div class="form-group"><input type="text" id="urlInput15" placeholder="วางลิงก์ (URL) ที่ 15"></div>
+        </div>
         
-        </div> <button id="downloadAllButton">ดาวน์โหลดทั้งหมด</button>
+        <button id="downloadAllButton">ดาวน์โหลดทั้งหมด</button>
         
         <div id="statusArea">
             </div>
     </div>
 
     <script>
-        // --- ⭐️ JavaScript (ไม่ต้องแก้เลย!) ⭐️ ---
+        // --- ⭐️ 3. JavaScript (เขียนใหม่เกือบทั้งหมด) ⭐️ ---
         
         const downloadAllButton = document.getElementById("downloadAllButton");
         const statusArea = document.getElementById("statusArea");
-        const apiUrl = "https://mydownloader-8iq3.onrender.com"; // URL ของ Backend
-
-        let pollingIntervals = {}; 
+        
+        // ⭐️⭐️⭐️ ใช้ URL ของ Render ที่คุณได้มา ⭐️⭐️⭐️
+        const apiUrl = "https://mydownloader-8iq3.onrender.com"; 
 
         downloadAllButton.addEventListener("click", function() {
-            statusArea.innerHTML = "<h4>สถานะการดาวน์โหลด:</h4>";
+            statusArea.innerHTML = "<h4>สถานะ:</h4>";
             
             for (let i = 1; i <= 15; i++) {
                 const urlInput = document.getElementById(`urlInput${i}`);
                 const url = urlInput.value.trim();
 
                 if (url) {
-                    startDownload(url, i);
+                    // ⭐️ 4. เรียกฟังก์ชันใหม่ (แทน startDownload)
+                    getDirectLink(url, i);
                     urlInput.value = "";
                 }
             }
         });
 
-        async function startDownload(url, slotIndex) {
-            const progressId = `progress-item-${slotIndex}`;
-            const barId = `progress-bar-${slotIndex}`;
-            const textId = `progress-text-${slotIndex}`;
-
+        async function getDirectLink(url, slotIndex) {
+            // ⭐️ 5. สร้างแถบสถานะ "กำลังรอ"
+            const statusId = `status-item-${slotIndex}`;
             const itemHtml = `
-                <div class="progress-item" id="${progressId}">
-                    <div class="progress-item-info" id="${textId}">
-                        (ช่อง ${slotIndex}) กำลังเริ่ม...
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar status-pending" id="${barId}">0%</div>
-                    </div>
+                <div class="status-item status-pending" id="${statusId}">
+                    (ช่อง ${slotIndex}) กำลังขอลิงก์สำหรับ: ${url.substring(0, 50)}...
                 </div>
             `;
             statusArea.insertAdjacentHTML('beforeend', itemHtml);
+            const statusElement = document.getElementById(statusId);
 
             try {
-                const response = await fetch(`${apiUrl}/download`, {
+                // ⭐️ 6. ยิง API ไปที่ /get_download_link
+                const response = await fetch(`${apiUrl}/get_download_link`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ url: url })
                 });
-                
-                if (!response.ok) throw new Error('Server error');
 
                 const data = await response.json();
-                const downloadId = data.download_id;
 
-                pollingIntervals[downloadId] = setInterval(() => {
-                    checkStatus(downloadId, barId, textId);
-                }, 1000); 
+                if (!response.ok || data.error) {
+                    throw new Error(data.error || 'Server error');
+                }
+
+                // ⭐️ 7. สำเร็จ! ได้ลิงก์ตรงมาแล้ว
+                statusElement.textContent = `[สำเร็จ] ${data.filename} - กำลังเริ่มดาวน์โหลด...`;
+                statusElement.className = "status-item status-success";
+                
+                // ⭐️ 8. สั่งเบราว์เซอร์ดาวน์โหลด!!
+                triggerBrowserDownload(data.direct_url, data.filename);
 
             } catch (error) {
-                console.error('Error starting download:', error);
-                document.getElementById(textId).textContent = `(ช่อง ${slotIndex}) เริ่มดาวน์โหลดล้มเหลว`;
-                document.getElementById(barId).classList.add('status-error');
+                console.error('Error getting link:', error);
+                statusElement.textContent = `[ล้มเหลว] (ช่อง ${slotIndex}) - ${error.message}`;
+                statusElement.className = "status-item status-error";
             }
         }
-
-        async function checkStatus(downloadId, barId, textId) {
-            try {
-                const response = await fetch(`${apiUrl}/status/${downloadId}`);
-                if (!response.ok) {
-                    clearInterval(pollingIntervals[downloadId]);
-                    delete pollingIntervals[downloadId];
-                    return;
-                }
-
-                const progress = await response.json();
-                
-                const progressBar = document.getElementById(barId);
-                const progressText = document.getElementById(textId);
-
-                if (!progressBar || !progressText) {
-                    clearInterval(pollingIntervals[downloadId]); 
-                    return;
-                }
-
-                let percent = Math.floor(parseFloat(progress.percent));
-                let filename = progress.filename || '...';
-                
-                if (filename.length > 50) {
-                    filename = "..." + filename.slice(-47);
-                }
-
-                progressBar.style.width = `${percent}%`;
-                progressBar.textContent = `${percent}%`;
-                progressText.textContent = `[${progress.status}] ${filename}`;
-                progressBar.className = `progress-bar status-${progress.status}`;
-
-                if (progress.status === 'finished' || progress.status === 'error') {
-                    clearInterval(pollingIntervals[downloadId]); 
-                    delete pollingIntervals[downloadId];
-                    
-                    if(progress.status === 'finished') {
-                        progressBar.style.width = '100%';
-                        progressBar.textContent = '100%';
-                        progressText.textContent = `[เสร็จสิ้น] ${filename}`;
-                    }
-                }
-
-            } catch (error) {
-                console.error('Polling error:', error);
-                clearInterval(pollingIntervals[downloadId]); 
-                delete pollingIntervals[downloadId];
-            }
+        
+        function triggerBrowserDownload(url, filename) {
+            // ⭐️ 9. สร้างแท็ก <a> ล่องหน
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename; // บอกเบราว์เซอร์ว่านี่คือไฟล์ดาวน์โหลด
+            document.body.appendChild(a); // เพิ่มลงในหน้า
+            a.click(); // สั่งคลิก
+            document.body.removeChild(a); // ลบทิ้ง
         }
     </script>
 
