@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Downloader v2</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* เปลี่ยนเป็นชิดบน */
+            min-height: 100vh;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding-top: 30px; /* เพิ่มช่องว่างด้านบน */
+        }
+        .downloader-card {
+            width: 90%;
+            max-width: 600px; /* ขยายการ์ด */
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 1rem; /* ลดช่องว่าง */
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box; 
+        }
+        button {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 1rem;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* ⭐️ ส่วนแสดงสถานะ (ใหม่) ⭐️ */
+        #statusArea {
+            margin-top: 2rem;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+        }
+        .progress-item {
+            margin-bottom: 1rem;
+        }
+        .progress-item-info {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 0.25rem;
+            /* ตัดข้อความที่ยาวเกินไป */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            height: 20px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            width: 0%; /* เริ่มที่ 0% */
+            height: 100%;
+            background-color: #28a745; /* สีเขียว */
+            transition: width 0.3s ease;
+            text-align: center;
+            color: white;
+            font-size: 0.8rem;
+            line-height: 20px;
+            font-weight: bold;
+        }
+        
+        /* ⭐️ สีสำหรับสถานะต่างๆ ⭐️ */
+        .progress-bar.status-downloading { background-color: #007bff; } /* น้ำเงิน */
+        .progress-bar.status-finished { background-color: #28a745; } /* เขียว */
+        .progress-bar.status-error { background-color: #dc3545; } /* แดง */
+        .progress-bar.status-pending { background-color: #6c757d; } /* เทา */
+
+    </style>
+</head>
+<body>
+
+    <div class="downloader-card">
+        <h2>Downloader (5 ช่อง)</h2>
+        
+        <!-- ⭐️ ช่องใส่ URL 5 ช่อง ⭐️ -->
+        <div class="form-group">
+            <input type="text" id="urlInput1" placeholder="วางลิงก์ (URL) ที่ 1">
+        </div>
+        <div class="form-group">
+            <input type="text" id="urlInput2" placeholder="วางลิงก์ (URL) ที่ 2">
+        </div>
+        <div class="form-group">
+            <input type="text" id="urlInput3" placeholder="วางลิงก์ (URL) ที่ 3">
+        </div>
+        <div class="form-group">
+            <input type="text" id="urlInput4" placeholder="วางลิงก์ (URL) ที่ 4">
+        </div>
+        <div class="form-group">
+            <input type="text" id="urlInput5" placeholder="วางลิงก์ (URL) ที่ 5">
+        </div>
+        
+        <button id="downloadAllButton">ดาวน์โหลดทั้งหมด</button>
+        
+        <!-- ⭐️ พื้นที่แสดง Progress Bar ⭐️ -->
+        <div id="statusArea">
+            <!-- Progress bars will be added here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // --- ⭐️ JavaScript (อัปเกรดทั้งหมด) ⭐️ ---
+        
+        const downloadAllButton = document.getElementById("downloadAllButton");
+        const statusArea = document.getElementById("statusArea");
+        const apiUrl = "http://localhost:5000"; // URL ของ Backend
+
+        // เก็บ Interval ID เพื่อใช้หยุด polling
+        let pollingIntervals = {}; 
+
+        downloadAllButton.addEventListener("click", function() {
+            // 1. ล้างสถานะเก่า
+            statusArea.innerHTML = "<h4>สถานะการดาวน์โหลด:</h4>";
+            
+            // 2. วนลูปเช็ค 5 ช่อง
+            for (let i = 1; i <= 5; i++) {
+                const urlInput = document.getElementById(`urlInput${i}`);
+                const url = urlInput.value.trim();
+
+                if (url) {
+                    // 3. ถ้ามี URL ให้เริ่มดาวน์โหลด
+                    startDownload(url, i);
+                    
+                    // 4. ล้างช่อง Input
+                    urlInput.value = "";
+                }
+            }
+        });
+
+        async function startDownload(url, slotIndex) {
+            // 5. สร้าง HTML สำหรับ Progress Bar นี้
+            const progressId = `progress-item-${slotIndex}`;
+            const barId = `progress-bar-${slotIndex}`;
+            const textId = `progress-text-${slotIndex}`;
+
+            const itemHtml = `
+                <div class="progress-item" id="${progressId}">
+                    <div class="progress-item-info" id="${textId}">
+                        (ช่อง ${slotIndex}) กำลังเริ่ม...
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar status-pending" id="${barId}">0%</div>
+                    </div>
+                </div>
+            `;
+            statusArea.insertAdjacentHTML('beforeend', itemHtml);
+
+            try {
+                // 6. ยิง API ไปที่ /download
+                const response = await fetch(`${apiUrl}/download`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url })
+                });
+                
+                if (!response.ok) throw new Error('Server error');
+
+                const data = await response.json();
+                const downloadId = data.download_id;
+
+                // 7. เริ่ม "ถามซ้ำๆ" (Polling) ทุก 1 วินาที
+                pollingIntervals[downloadId] = setInterval(() => {
+                    checkStatus(downloadId, barId, textId);
+                }, 1000); // 1 วินาที
+
+            } catch (error) {
+                console.error('Error starting download:', error);
+                document.getElementById(textId).textContent = `(ช่อง ${slotIndex}) เริ่มดาวน์โหลดล้มเหลว`;
+                document.getElementById(barId).classList.add('status-error');
+            }
+        }
+
+        async function checkStatus(downloadId, barId, textId) {
+            try {
+                // 8. ยิง API ไปที่ /status/<id>
+                const response = await fetch(`${apiUrl}/status/${downloadId}`);
+                if (!response.ok) {
+                    // ถ้าหา ID ไม่เจอ (อาจจะนานไป)
+                    clearInterval(pollingIntervals[downloadId]);
+                    delete pollingIntervals[downloadId];
+                    return;
+                }
+
+                const progress = await response.json();
+                
+                const progressBar = document.getElementById(barId);
+                const progressText = document.getElementById(textId);
+
+                if (!progressBar || !progressText) {
+                    clearInterval(pollingIntervals[downloadId]); // หยุดถ้า element หาย
+                    return;
+                }
+
+                // 9. อัปเดตหน้าเว็บด้วยข้อมูลใหม่
+                let percent = Math.floor(parseFloat(progress.percent));
+                let filename = progress.filename || '...';
+                
+                // ตัดชื่อไฟล์ถ้ามันยาวไป
+                if (filename.length > 50) {
+                    filename = "..." + filename.slice(-47);
+                }
+
+                // อัปเดต Progress Bar
+                progressBar.style.width = `${percent}%`;
+                progressBar.textContent = `${percent}%`;
+
+                // อัปเดตข้อความ
+                progressText.textContent = `[${progress.status}] ${filename}`;
+                
+                // อัปเดตสี
+                progressBar.className = `progress-bar status-${progress.status}`;
+
+
+                // 10. ถ้าเสร็จแล้ว หรือ Error ให้หยุดถาม
+                if (progress.status === 'finished' || progress.status === 'error') {
+                    clearInterval(pollingIntervals[downloadId]); // หยุด polling
+                    delete pollingIntervals[downloadId];
+                    
+                    if(progress.status === 'finished') {
+                        progressBar.style.width = '100%';
+                        progressBar.textContent = '100%';
+                        progressText.textContent = `[เสร็จสิ้น] ${filename}`;
+                    }
+                }
+
+            } catch (error) {
+                console.error('Polling error:', error);
+                clearInterval(pollingIntervals[downloadId]); // หยุดถ้ามีปัญหา
+                delete pollingIntervals[downloadId];
+            }
+        }
+    </script>
+
+</body>
+</html>
