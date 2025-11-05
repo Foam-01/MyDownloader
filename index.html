@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OneClickDownload</title>
+    <title>OneClickDownload (v8)</title>
     
     <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>'>
     
@@ -13,98 +13,104 @@
 
     <style>
         body {
-            /* ใช้ฟอนต์ใหม่ */
             font-family: 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            /* พื้นหลังสีขาวสะอาด */
             background-color: #f8f9fa;
             margin: 0;
             padding: 30px;
         }
-
         .downloader-card {
             width: 90%;
             max-width: 900px; 
             background: #ffffff;
-            padding: 2.5rem; /* เพิ่มช่องว่างภายใน */
-            border-radius: 12px; /* มนขึ้นเล็กน้อย */
-            /* เงาที่นุ่มนวลขึ้น */
+            padding: 2.5rem;
+            border-radius: 12px;
             box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
-            border: 1px solid #e7eaf3; /* เพิ่มเส้นขอบบางๆ */
+            border: 1px solid #e7eaf3;
         }
-
         h2 { 
-            text-align: center; 
-            color: #212529; /* สีเทาเข้ม (ไม่ดำสนิท) */
-            margin-top: 0;
-            margin-bottom: 2rem;
-            font-weight: 600;
-            display: flex; /* ⭐️ จัดไอคอนให้อยู่คู่กับข้อความ ⭐️ */
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem; /* ⭐️ ช่องว่างระหว่างไอคอนกับข้อความ ⭐️ */
+            text-align: center; color: #212529;
+            margin-top: 0; margin-bottom: 2rem; font-weight: 600;
+            display: flex; justify-content: center;
+            align-items: center; gap: 0.5rem;
         }
-
         .input-grid-container {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.75rem; /* ลดช่องว่างลงเล็กน้อย */
+            gap: 0.75rem;
         }
-
         .form-group { margin-bottom: 0; }
-        
         input[type="text"] {
-            width: 100%; 
-            padding: 0.8rem; /* เพิ่ม padding */
-            border: 1px solid #ced4da;
-            border-radius: 8px; /* มนขึ้น */
-            box-sizing: border-box; 
-            background-color: #f8f9fa; /* สีพื้นหลังช่อง input */
-            font-family: 'Noto Sans Thai', sans-serif; /* ใช้ฟอนต์ใหม่ */
+            width: 100%; padding: 0.8rem; border: 1px solid #ced4da;
+            border-radius: 8px; box-sizing: border-box; 
+            background-color: #f8f9fa;
+            font-family: 'Noto Sans Thai', sans-serif;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-
-        /* ⭐️ เพิ่มสไตล์ตอน "Focus" (กำลังพิมพ์) ⭐️ */
         input[type="text"]:focus {
-            outline: none;
-            border-color: #80bdff;
+            outline: none; border-color: #80bdff;
             background-color: #fff;
             box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
         }
-
-        /* ⭐️ (สำคัญ!) อัปเกรดปุ่มใหม่ ⭐️ */
         button {
-            width: 100%; 
-            padding: 0.9rem; /* ใหญ่ขึ้น */
-            border: none; 
+            width: 100%; padding: 0.9rem; border: none; 
             border-radius: 8px;
-            /* สีแบบไล่เฉด (Gradient) */
             background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
-            color: white; 
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 1.5rem;
-            /* เงาของปุ่ม */
+            color: white; font-size: 1rem; font-weight: 600;
+            cursor: pointer; margin-top: 1.5rem;
             box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
             transition: all 0.2s ease-in-out;
         }
-
-        /* ⭐️ อนิเมชันตอนเอาเมาส์ชี้ ⭐️ */
         button:hover {
-            transform: translateY(-2px); /* ขยับขึ้นเล็กน้อย */
+            transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
         }
-
-        /* ⭐️ อนิเมชันตอน "กด" ⭐️ */
         button:active {
-            transform: translateY(1px); /* ขยับลง */
+            transform: translateY(1px);
             box-shadow: 0 2px 10px rgba(0, 123, 255, 0.2);
         }
         
+        /* ⭐️ 2. สไตล์ของ Progress Bar (กลับมาแล้ว!) ⭐️ */
+        #statusArea {
+            margin-top: 2rem;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+        }
+        .progress-item {
+            margin-bottom: 1rem;
+        }
+        .progress-item-info {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            height: 20px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            width: 0%; 
+            height: 100%;
+            background-color: #28a745; 
+            transition: width 0.3s ease;
+            text-align: center;
+            color: white;
+            font-size: 0.8rem;
+            line-height: 20px;
+            font-weight: bold;
+        }
+        .progress-bar.status-downloading { background-color: #007bff; }
+        .progress-bar.status-finished { background-color: #28a745; }
+        .progress-bar.status-error { background-color: #dc3545; }
     </style>
 </head>
 <body>
@@ -113,7 +119,7 @@
         
         <h2>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            OneClickDownload
+            OneClickDownload (v8)
         </h2>
         
         <div class="input-grid-container">
@@ -136,27 +142,130 @@
         
         <button id="downloadAllButton">ดาวน์โหลดทั้งหมด</button>
         
+        <div id="statusArea">
+            </div>
     </div>
 
     <script>
-        // --- JavaScript (v4 - เหมือนเดิม ไม่ต้องแก้) ---
+        // --- ⭐️ 4. JavaScript (v8 - เขียนใหม่ทั้งหมด) ⭐️ ---
         
         const downloadAllButton = document.getElementById("downloadAllButton");
+        const statusArea = document.getElementById("statusArea");
         const apiUrl = "https://mydownloader-8iq3.onrender.com"; // ⭐️ URL ของ Render
 
         downloadAllButton.addEventListener("click", function() {
+            statusArea.innerHTML = "<h4>สถานะการดาวน์โหลด:</h4>";
             
             for (let i = 1; i <= 15; i++) {
                 const urlInput = document.getElementById(`urlInput${i}`);
                 const url = urlInput.value.trim();
-
                 if (url) {
-                    const downloadUrl = `${apiUrl}/download_video?url=${encodeURIComponent(url)}`;
-                    window.open(downloadUrl, '_blank');
+                    // ⭐️ เรียกฟังก์ชันใหม่ (Fetch) ⭐️
+                    startFetchDownload(url, i);
                     urlInput.value = "";
                 }
             }
         });
+
+        async function startFetchDownload(url, slotIndex) {
+            // 1. สร้าง HTML สำหรับ Progress Bar
+            const barId = `progress-bar-${slotIndex}`;
+            const textId = `progress-text-${slotIndex}`;
+
+            const itemHtml = `
+                <div class="progress-item">
+                    <div class="progress-item-info" id="${textId}">(ช่อง ${slotIndex}) กำลังเชื่อมต่อ...</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar status-downloading" id="${barId}">0%</div>
+                    </div>
+                </div>
+            `;
+            statusArea.insertAdjacentHTML('beforeend', itemHtml);
+            
+            const progressBar = document.getElementById(barId);
+            const progressText = document.getElementById(textId);
+
+            try {
+                // 2. สร้าง URL สำหรับเรียก API
+                const downloadUrl = `${apiUrl}/download_video?url=${encodeURIComponent(url)}`;
+                
+                // 3. ⭐️ (สำคัญ) สั่ง Fetch เพื่อเริ่มดาวน์โหลด (ไม่ใช่ window.open)
+                const response = await fetch(downloadUrl);
+
+                if (!response.ok) {
+                    throw new Error(`เซิร์ฟเวอร์ล้มเหลว (Error ${response.status})`);
+                }
+
+                // 4. ⭐️ ดึงขนาดไฟล์ทั้งหมด (ถ้ามี)
+                const contentLength = response.headers.get('content-length');
+                const totalSize = parseInt(contentLength, 10);
+                
+                // 5. ⭐️ ดึงชื่อไฟล์จาก Header
+                let filename = "download.mp4";
+                const disposition = response.headers.get('content-disposition');
+                if (disposition) {
+                    // ลองดึงชื่อไฟล์จาก header (เวอร์ชัน UTF-8)
+                    const utf8FilenameMatch = /filename\*=UTF-8''([\w%\-\.]+)/.exec(disposition);
+                    if (utf8FilenameMatch) {
+                        filename = decodeURIComponent(utf8FilenameMatch[1]);
+                    } else {
+                        // ลองดึงชื่อไฟล์ (เวอร์ชัน ASCII)
+                        const asciiFilenameMatch = /filename="([^"]+)"/.exec(disposition);
+                        if (asciiFilenameMatch) {
+                            filename = asciiFilenameMatch[1];
+                        }
+                    }
+                }
+                
+                progressText.textContent = `[กำลังโหลด] ${filename}`;
+
+                // 6. ⭐️ อ่านไฟล์ที่สตรีมมา (เพื่อคำนวณ %)
+                const reader = response.body.getReader();
+                let loaded = 0;
+                let chunks = []; // ⭐️ เก็บไฟล์ไว้ใน RAM
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    chunks.push(value); // ⭐️ เก็บไฟล์
+                    loaded += value.length;
+
+                    if (totalSize > 0) {
+                        // ⭐️ อัปเดต %
+                        const percent = Math.floor((loaded / totalSize) * 100);
+                        progressBar.style.width = `${percent}%`;
+                        progressBar.textContent = `${percent}%`;
+                    }
+                }
+
+                // 7. ⭐️ ดาวน์โหลดเสร็จ 100% (ไฟล์อยู่ใน RAM)
+                progressText.textContent = `[เสร็จสิ้น] ${filename} - กำลังบันทึก...`;
+                progressBar.style.width = `100%`;
+                progressBar.textContent = `100%`;
+                progressBar.className = "progress-bar status-finished";
+
+                // 8. ⭐️ รวมไฟล์ใน RAM ให้เป็นก้อนเดียว (Blob)
+                const blob = new Blob(chunks);
+                
+                // 9. ⭐️ สร้าง URL ชั่วคราว (ในเครื่อง)
+                const localUrl = window.URL.createObjectURL(blob);
+                
+                // 10. ⭐️ สั่ง "Save As..." (เหมือน v3)
+                const a = document.createElement('a');
+                a.href = localUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(localUrl); // ⭐️ คืน RAM
+
+            } catch (error) {
+                console.error(`(ช่อง ${slotIndex}) Error:`, error);
+                progressBar.className = "progress-bar status-error";
+                progressText.textContent = `[ล้มเหลว] (ช่อง ${slotIndex}) - ${error.message}`;
+            }
+        }
     </script>
 
 </body>
