@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OneClickDownload (v8)</title>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3251035655598163"
+     crossorigin="anonymous"></script>
     
     <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>'>
     
@@ -73,7 +76,6 @@
             box-shadow: 0 2px 10px rgba(0, 123, 255, 0.2);
         }
         
-        /* ⭐️ 2. สไตล์ของ Progress Bar (กลับมาแล้ว!) ⭐️ */
         #statusArea {
             margin-top: 2rem;
             border-top: 1px solid #eee;
@@ -147,11 +149,11 @@
     </div>
 
     <script>
-        // --- ⭐️ 4. JavaScript (v8 - เขียนใหม่ทั้งหมด) ⭐️ ---
+        // --- JavaScript (v8 - เหมือนเดิม) ---
         
         const downloadAllButton = document.getElementById("downloadAllButton");
         const statusArea = document.getElementById("statusArea");
-        const apiUrl = "https://mydownloader-8iq3.onrender.com"; // ⭐️ URL ของ Render
+        const apiUrl = "https://mydownloader-8iq3.onrender.com"; 
 
         downloadAllButton.addEventListener("click", function() {
             statusArea.innerHTML = "<h4>สถานะการดาวน์โหลด:</h4>";
@@ -160,7 +162,6 @@
                 const urlInput = document.getElementById(`urlInput${i}`);
                 const url = urlInput.value.trim();
                 if (url) {
-                    // ⭐️ เรียกฟังก์ชันใหม่ (Fetch) ⭐️
                     startFetchDownload(url, i);
                     urlInput.value = "";
                 }
@@ -189,27 +190,25 @@
                 // 2. สร้าง URL สำหรับเรียก API
                 const downloadUrl = `${apiUrl}/download_video?url=${encodeURIComponent(url)}`;
                 
-                // 3. ⭐️ (สำคัญ) สั่ง Fetch เพื่อเริ่มดาวน์โหลด (ไม่ใช่ window.open)
+                // 3. สั่ง Fetch เพื่อเริ่มดาวน์โหลด
                 const response = await fetch(downloadUrl);
 
                 if (!response.ok) {
                     throw new Error(`เซิร์ฟเวอร์ล้มเหลว (Error ${response.status})`);
                 }
 
-                // 4. ⭐️ ดึงขนาดไฟล์ทั้งหมด (ถ้ามี)
+                // 4. ดึงขนาดไฟล์ทั้งหมด (ถ้ามี)
                 const contentLength = response.headers.get('content-length');
                 const totalSize = parseInt(contentLength, 10);
                 
-                // 5. ⭐️ ดึงชื่อไฟล์จาก Header
+                // 5. ดึงชื่อไฟล์จาก Header
                 let filename = "download.mp4";
                 const disposition = response.headers.get('content-disposition');
                 if (disposition) {
-                    // ลองดึงชื่อไฟล์จาก header (เวอร์ชัน UTF-8)
                     const utf8FilenameMatch = /filename\*=UTF-8''([\w%\-\.]+)/.exec(disposition);
                     if (utf8FilenameMatch) {
                         filename = decodeURIComponent(utf8FilenameMatch[1]);
                     } else {
-                        // ลองดึงชื่อไฟล์ (เวอร์ชัน ASCII)
                         const asciiFilenameMatch = /filename="([^"]+)"/.exec(disposition);
                         if (asciiFilenameMatch) {
                             filename = asciiFilenameMatch[1];
@@ -219,46 +218,45 @@
                 
                 progressText.textContent = `[กำลังโหลด] ${filename}`;
 
-                // 6. ⭐️ อ่านไฟล์ที่สตรีมมา (เพื่อคำนวณ %)
+                // 6. อ่านไฟล์ที่สตรีมมา (เพื่อคำนวณ %)
                 const reader = response.body.getReader();
                 let loaded = 0;
-                let chunks = []; // ⭐️ เก็บไฟล์ไว้ใน RAM
+                let chunks = []; 
 
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
 
-                    chunks.push(value); // ⭐️ เก็บไฟล์
+                    chunks.push(value); 
                     loaded += value.length;
 
                     if (totalSize > 0) {
-                        // ⭐️ อัปเดต %
                         const percent = Math.floor((loaded / totalSize) * 100);
                         progressBar.style.width = `${percent}%`;
                         progressBar.textContent = `${percent}%`;
                     }
                 }
 
-                // 7. ⭐️ ดาวน์โหลดเสร็จ 100% (ไฟล์อยู่ใน RAM)
+                // 7. ดาวน์โหลดเสร็จ 100%
                 progressText.textContent = `[เสร็จสิ้น] ${filename} - กำลังบันทึก...`;
                 progressBar.style.width = `100%`;
                 progressBar.textContent = `100%`;
                 progressBar.className = "progress-bar status-finished";
 
-                // 8. ⭐️ รวมไฟล์ใน RAM ให้เป็นก้อนเดียว (Blob)
+                // 8. รวมไฟล์ใน RAM (Blob)
                 const blob = new Blob(chunks);
                 
-                // 9. ⭐️ สร้าง URL ชั่วคราว (ในเครื่อง)
+                // 9. สร้าง URL ชั่วคราว (ในเครื่อง)
                 const localUrl = window.URL.createObjectURL(blob);
                 
-                // 10. ⭐️ สั่ง "Save As..." (เหมือน v3)
+                // 10. สั่ง "Save As..."
                 const a = document.createElement('a');
                 a.href = localUrl;
                 a.download = filename;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                window.URL.revokeObjectURL(localUrl); // ⭐️ คืน RAM
+                window.URL.revokeObjectURL(localUrl); 
 
             } catch (error) {
                 console.error(`(ช่อง ${slotIndex}) Error:`, error);
