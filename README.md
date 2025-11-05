@@ -17,7 +17,7 @@ This project uses a Python Flask backend and an HTML/JavaScript frontend for pas
 * 📺 **Multi-Platform:** Supports downloading from various platforms (YouTube, Facebook, etc.).
 * 💾 **Save to Downloads:** Automatically saves completed files to the user's "Downloads" folder.
 * 📊 **Real-time Progress:** Displays progress bars and status (downloading/finished/failed) on the web page.
-* ⚡ **Concurrent Downloads:** Supports downloading up to 5 files simultaneously.
+* ⚡ **Concurrent Downloads:** Supports downloading up to 15 files simultaneously.
 
 ## 🖥️ Screenshots
 <img width="1910" height="962" alt="Screenshot 2025-11-05 113352" src="https://github.com/user-attachments/assets/bc6e963e-6209-4d2c-9856-1cf29435dd7c" />
