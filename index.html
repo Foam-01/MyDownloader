@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Downloader v2 (15 Slots)</title>
+    <title>Web Downloader v2 (3 Columns)</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -17,7 +17,8 @@
         }
         .downloader-card {
             width: 90%;
-            max-width: 600px; /* ขยายการ์ด */
+            /* ⭐️ 1. ขยายการ์ดให้กว้างขึ้นเพื่อรองรับ 3 คอลัมน์ ⭐️ */
+            max-width: 900px; 
             background: #ffffff;
             padding: 2rem;
             border-radius: 10px;
@@ -28,9 +29,19 @@
             color: #333;
             margin-top: 0;
         }
-        .form-group {
-            margin-bottom: 1rem; /* ลดช่องว่าง */
+
+        /* ⭐️ 2. เพิ่ม CSS สำหรับ Grid Container ⭐️ */
+        .input-grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr; /* สร้าง 3 คอลัมน์เท่าๆ กัน */
+            gap: 1rem; /* ช่องว่างระหว่างคอลัมน์และแถว */
         }
+
+        .form-group {
+            /* ⭐️ 3. เอา margin-bottom เดิมออก (Grid 'gap' จะจัดการแทน) ⭐️ */
+            margin-bottom: 0; 
+        }
+        
         input[type="text"] {
             width: 100%;
             padding: 0.75rem;
@@ -49,13 +60,13 @@
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.2s;
-            margin-top: 1rem;
+            margin-top: 1.5rem; /* เพิ่มช่องว่างบนปุ่มเล็กน้อย */
         }
         button:hover {
             background-color: #0056b3;
         }
 
-        /* ⭐️ ส่วนแสดงสถานะ (ใหม่) ⭐️ */
+        /* ⭐️ ส่วนแสดงสถานะ (เหมือนเดิม) ⭐️ */
         #statusArea {
             margin-top: 2rem;
             border-top: 1px solid #eee;
@@ -68,7 +79,6 @@
             font-size: 0.9rem;
             color: #555;
             margin-bottom: 0.25rem;
-            /* ตัดข้อความที่ยาวเกินไป */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis; 
@@ -81,9 +91,9 @@
             overflow: hidden;
         }
         .progress-bar {
-            width: 0%; /* เริ่มที่ 0% */
+            width: 0%; 
             height: 100%;
-            background-color: #28a745; /* สีเขียว */
+            background-color: #28a745; 
             transition: width 0.3s ease;
             text-align: center;
             color: white;
@@ -92,105 +102,98 @@
             font-weight: bold;
         }
         
-        /* ⭐️ สีสำหรับสถานะต่างๆ ⭐️ */
-        .progress-bar.status-downloading { background-color: #007bff; } /* น้ำเงิน */
-        .progress-bar.status-finished { background-color: #28a745; } /* เขียว */
-        .progress-bar.status-error { background-color: #dc3545; } /* แดง */
-        .progress-bar.status-pending { background-color: #6c757d; } /* เทา */
+        .progress-bar.status-downloading { background-color: #007bff; }
+        .progress-bar.status-finished { background-color: #28a745; }
+        .progress-bar.status-error { background-color: #dc3545; }
+        .progress-bar.status-pending { background-color: #6c757d; }
 
     </style>
 </head>
 <body>
 
     <div class="downloader-card">
-        <h2>Downloader (15 ช่อง)</h2>
+        <h2>Downloader (3 คอลัมน์)</h2>
         
-        <div class="form-group">
-            <input type="text" id="urlInput1" placeholder="วางลิงก์ (URL) ที่ 1">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput2" placeholder="วางลิงก์ (URL) ที่ 2">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput3" placeholder="วางลิงก์ (URL) ที่ 3">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput4" placeholder="วางลิงก์ (URL) ที่ 4">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput5" placeholder="วางลิงก์ (URL) ที่ 5">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput6" placeholder="วางลิงก์ (URL) ที่ 6">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput7" placeholder="วางลิงก์ (URL) ที่ 7">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput8" placeholder="วางลิงก์ (URL) ที่ 8">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput9" placeholder="วางลิงก์ (URL) ที่ 9">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput10" placeholder="วางลิงก์ (URL) ที่ 10">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput11" placeholder="วางลิงก์ (URL) ที่ 11">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput12" placeholder="วางลิงก์ (URL) ที่ 12">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput13" placeholder="วางลิงก์ (URL) ที่ 13">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput14" placeholder="วางลิงก์ (URL) ที่ 14">
-        </div>
-        <div class="form-group">
-            <input type="text" id="urlInput15" placeholder="วางลิงก์ (URL) ที่ 15">
-        </div>
+        <div class="input-grid-container">
+
+            <div class="form-group">
+                <input type="text" id="urlInput1" placeholder="วางลิงก์ (URL) ที่ 1">
+            </div>
+            <div class="form-group">
+                <input type="text" id="urlInput2" placeholder="วางลิงก์ (URL) ที่ 2">
+            </div>
+            <div class="form-group">
+                <input type="text" id="urlInput3" placeholder="วางลิงก์ (URL) ที่ 3">
+            </div>
+            <div class="form-group">
+                <input type="text" id="urlInput4" placeholder="วางลิงก์ (URL) ที่ 4">
+            </div>
+            <div class="form-group">
+                <input type="text" id="urlInput5" placeholder="วางลิงก์ (URL) ที่ 5">
+            </div>
+            
+            <div class="form-group">
+                <input type="text" id="urlInput6" placeholder="วางลิงก์ (URL) ที่ 6">
+            </div>
+            <div class="form-group">
+                <input type="text" id="urlInput7" placeholder="วางลิงก์ (URL) ที่ 7">
+            </div>
+            <div class="form-group">
+                <input type="text" id="urlInput8" placeholder="วางลิงก์ (URL) ที่ 8">
+            </div>
+            <div class="form-group">
+                <input type="text" id="urlInput9" placeholder="วางลิงก์ (URL) ที่ 9">
+            </div>
+            <div class="form-group">
+                <input type="text" id="urlInput10" placeholder="วางลิงก์ (URL) ที่ 10">
+            </div>
+
+            <div class="form-group">
+                <input type="text" id="urlInput11" placeholder="วางลิงก์ (URL) ที่ 11">
+            </div>
+            <div class="form-group">
+                <input type="text" id="urlInput12" placeholder="วางลิงก์ (URL) ที่ 12">
+            </div>
+            <div class="form-group">
+                <input type="text" id="urlInput13" placeholder="วางลิงก์ (URL) ที่ 13">
+            </div>
+            <div class="form-group">
+                <input type="text" id="urlInput14" placeholder="วางลิงก์ (URL) ที่ 14">
+            </div>
+            <div class="form-group">
+                <input type="text" id="urlInput15" placeholder="วางลิงก์ (URL) ที่ 15">
+            </div>
         
-        <button id="downloadAllButton">ดาวน์โหลดทั้งหมด</button>
+        </div> <button id="downloadAllButton">ดาวน์โหลดทั้งหมด</button>
         
         <div id="statusArea">
             </div>
     </div>
 
     <script>
-        // --- ⭐️ JavaScript (อัปเกรดทั้งหมด) ⭐️ ---
+        // --- ⭐️ JavaScript (ไม่ต้องแก้เลย!) ⭐️ ---
         
         const downloadAllButton = document.getElementById("downloadAllButton");
         const statusArea = document.getElementById("statusArea");
         const apiUrl = "http://localhost:5000"; // URL ของ Backend
 
-        // เก็บ Interval ID เพื่อใช้หยุด polling
         let pollingIntervals = {}; 
 
         downloadAllButton.addEventListener("click", function() {
-            // 1. ล้างสถานะเก่า
             statusArea.innerHTML = "<h4>สถานะการดาวน์โหลด:</h4>";
             
-            // ⭐️⭐️⭐️ เปลี่ยนตรงนี้ ⭐️⭐️⭐️
-            // 2. วนลูปเช็ค 15 ช่อง
             for (let i = 1; i <= 15; i++) {
-            // ⭐️⭐️⭐️ ⭐️⭐️⭐️ ⭐️⭐️⭐️
-            
                 const urlInput = document.getElementById(`urlInput${i}`);
                 const url = urlInput.value.trim();
 
                 if (url) {
-                    // 3. ถ้ามี URL ให้เริ่มดาวน์โหลด
                     startDownload(url, i);
-                    
-                    // 4. ล้างช่อง Input
                     urlInput.value = "";
                 }
             }
         });
 
         async function startDownload(url, slotIndex) {
-            // 5. สร้าง HTML สำหรับ Progress Bar นี้
             const progressId = `progress-item-${slotIndex}`;
             const barId = `progress-bar-${slotIndex}`;
             const textId = `progress-text-${slotIndex}`;
@@ -208,7 +211,6 @@
             statusArea.insertAdjacentHTML('beforeend', itemHtml);
 
             try {
-                // 6. ยิง API ไปที่ /download
                 const response = await fetch(`${apiUrl}/download`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -220,10 +222,9 @@
                 const data = await response.json();
                 const downloadId = data.download_id;
 
-                // 7. เริ่ม "ถามซ้ำๆ" (Polling) ทุก 1 วินาที
                 pollingIntervals[downloadId] = setInterval(() => {
                     checkStatus(downloadId, barId, textId);
-                }, 1000); // 1 วินาที
+                }, 1000); 
 
             } catch (error) {
                 console.error('Error starting download:', error);
@@ -234,10 +235,8 @@
 
         async function checkStatus(downloadId, barId, textId) {
             try {
-                // 8. ยิง API ไปที่ /status/<id>
                 const response = await fetch(`${apiUrl}/status/${downloadId}`);
                 if (!response.ok) {
-                    // ถ้าหา ID ไม่เจอ (อาจจะนานไป)
                     clearInterval(pollingIntervals[downloadId]);
                     delete pollingIntervals[downloadId];
                     return;
@@ -249,33 +248,24 @@
                 const progressText = document.getElementById(textId);
 
                 if (!progressBar || !progressText) {
-                    clearInterval(pollingIntervals[downloadId]); // หยุดถ้า element หาย
+                    clearInterval(pollingIntervals[downloadId]); 
                     return;
                 }
 
-                // 9. อัปเดตหน้าเว็บด้วยข้อมูลใหม่
                 let percent = Math.floor(parseFloat(progress.percent));
                 let filename = progress.filename || '...';
                 
-                // ตัดชื่อไฟล์ถ้ามันยาวไป
                 if (filename.length > 50) {
                     filename = "..." + filename.slice(-47);
                 }
 
-                // อัปเดต Progress Bar
                 progressBar.style.width = `${percent}%`;
                 progressBar.textContent = `${percent}%`;
-
-                // อัปเดตข้อความ
                 progressText.textContent = `[${progress.status}] ${filename}`;
-                
-                // อัปเดตสี
                 progressBar.className = `progress-bar status-${progress.status}`;
 
-
-                // 10. ถ้าเสร็จแล้ว หรือ Error ให้หยุดถาม
                 if (progress.status === 'finished' || progress.status === 'error') {
-                    clearInterval(pollingIntervals[downloadId]); // หยุด polling
+                    clearInterval(pollingIntervals[downloadId]); 
                     delete pollingIntervals[downloadId];
                     
                     if(progress.status === 'finished') {
@@ -287,7 +277,7 @@
 
             } catch (error) {
                 console.error('Polling error:', error);
-                clearInterval(pollingIntervals[downloadId]); // หยุดถ้ามีปัญหา
+                clearInterval(pollingIntervals[downloadId]); 
                 delete pollingIntervals[downloadId];
             }
         }
