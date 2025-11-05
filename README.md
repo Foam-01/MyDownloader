@@ -1,4 +1,4 @@
-📦 MyDownloader
+<img width="1914" height="910" alt="Screenshot 2025-11-05 135051" src="https://github.com/user-attachments/assets/418fe759-e8f3-4099-b9ef-3061b91ca410" />📦 MyDownloader
 
 A web application for downloading videos from various websites like YouTube, Facebook Reels, etc., using `yt-dlp` as its core downloading engine.
 
@@ -20,15 +20,14 @@ This project uses a Python Flask backend and an HTML/JavaScript frontend for pas
 * ⚡ **Concurrent Downloads:** Supports downloading up to 15 files simultaneously.
 
 ## 🖥️ Screenshots
-<img width="1910" height="962" alt="Screenshot 2025-11-05 113352" src="https://github.com/user-attachments/assets/bc6e963e-6209-4d2c-9856-1cf29435dd7c" />
-<img width="1919" height="1078" alt="Screenshot 2025-11-05 113431" src="https://github.com/user-attachments/assets/59ea94e1-7967-4ea4-9a48-b3de3fc00101" />
-<img width="1917" height="964" alt="Screenshot 2025-11-05 113231" src="https://github.com/user-attachments/assets/ee1bf617-7419-4dba-acd6-38183de7d754" />
+
+<img width="1914" height="910" alt="Screenshot 2025-11-05 135051" src="https://github.com/user-attachments/assets/bf29f087-e4f8-4c1c-85ec-df5a055fa79e" />
+<img width="1917" height="913" alt="Screenshot 2025-11-05 135940" src="https://github.com/user-attachments/assets/7a2c7096-c0d8-4786-a24a-00a7ae4cffb8" />
+<img width="1917" height="923" alt="Screenshot 2025-11-05 140230" src="https://github.com/user-attachments/assets/c54a889b-ad51-4adb-86e2-b32c893784a8" />
 
 
 
-https://github.com/user-attachments/assets/1b9cd2e1-fc69-49de-9a5e-bf23461f2271
-
-
+https://github.com/user-attachments/assets/d86b9e71-31c7-4d7c-a8cf-304710297462
 
 
 
