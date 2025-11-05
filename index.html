@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Downloader v3 (Direct Link)</title>
+    <title>Web Downloader v4 (Proxy)</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -41,25 +41,8 @@
             margin-top: 1.5rem;
         }
         button:hover { background-color: #0056b3; }
-
-        /* ⭐️ 1. แก้ไขส่วนแสดงสถานะ (จะง่ายขึ้น) ⭐️ */
-        #statusArea {
-            margin-top: 2rem;
-            border-top: 1px solid #eee;
-            padding-top: 1rem;
-        }
-        .status-item {
-            padding: 0.5rem;
-            border-radius: 5px;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis; 
-        }
-        .status-pending { background-color: #e9ecef; color: #555; }
-        .status-success { background-color: #d4edda; color: #155724; }
-        .status-error { background-color: #f8d7da; color: #721c24; }
+        
+        /* ⭐️ เราไม่ต้องการ Status Area อีกแล้ว ⭐️ */
     </style>
 </head>
 <body>
@@ -87,82 +70,32 @@
         
         <button id="downloadAllButton">ดาวน์โหลดทั้งหมด</button>
         
-        <div id="statusArea">
-            </div>
     </div>
 
     <script>
-        // --- ⭐️ 3. JavaScript (เขียนใหม่เกือบทั้งหมด) ⭐️ ---
+        // --- ⭐️ JavaScript (v4 - ง่ายขึ้นมาก) ⭐️ ---
         
         const downloadAllButton = document.getElementById("downloadAllButton");
-        const statusArea = document.getElementById("statusArea");
-        
-        // ⭐️⭐️⭐️ ใช้ URL ของ Render ที่คุณได้มา ⭐️⭐️⭐️
-        const apiUrl = "https://mydownloader-8iq3.onrender.com"; 
+        const apiUrl = "https://mydownloader-8iq3.onrender.com"; // ⭐️ URL ของ Render
 
         downloadAllButton.addEventListener("click", function() {
-            statusArea.innerHTML = "<h4>สถานะ:</h4>";
             
             for (let i = 1; i <= 15; i++) {
                 const urlInput = document.getElementById(`urlInput${i}`);
                 const url = urlInput.value.trim();
 
                 if (url) {
-                    // ⭐️ 4. เรียกฟังก์ชันใหม่ (แทน startDownload)
-                    getDirectLink(url, i);
+                    // ⭐️ 1. สร้าง URL สำหรับเรียก API ใหม่
+                    const downloadUrl = `${apiUrl}/download_video?url=${encodeURIComponent(url)}`;
+                    
+                    // ⭐️ 2. สั่งเปิดลิงก์นี้ในแท็บใหม่
+                    // (เบราว์เซอร์จะเปิดแท็บใหม่ และ Render จะบังคับให้มัน "Save As...")
+                    window.open(downloadUrl, '_blank');
+                    
                     urlInput.value = "";
                 }
             }
         });
-
-        async function getDirectLink(url, slotIndex) {
-            // ⭐️ 5. สร้างแถบสถานะ "กำลังรอ"
-            const statusId = `status-item-${slotIndex}`;
-            const itemHtml = `
-                <div class="status-item status-pending" id="${statusId}">
-                    (ช่อง ${slotIndex}) กำลังขอลิงก์สำหรับ: ${url.substring(0, 50)}...
-                </div>
-            `;
-            statusArea.insertAdjacentHTML('beforeend', itemHtml);
-            const statusElement = document.getElementById(statusId);
-
-            try {
-                // ⭐️ 6. ยิง API ไปที่ /get_download_link
-                const response = await fetch(`${apiUrl}/get_download_link`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url: url })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok || data.error) {
-                    throw new Error(data.error || 'Server error');
-                }
-
-                // ⭐️ 7. สำเร็จ! ได้ลิงก์ตรงมาแล้ว
-                statusElement.textContent = `[สำเร็จ] ${data.filename} - กำลังเริ่มดาวน์โหลด...`;
-                statusElement.className = "status-item status-success";
-                
-                // ⭐️ 8. สั่งเบราว์เซอร์ดาวน์โหลด!!
-                triggerBrowserDownload(data.direct_url, data.filename);
-
-            } catch (error) {
-                console.error('Error getting link:', error);
-                statusElement.textContent = `[ล้มเหลว] (ช่อง ${slotIndex}) - ${error.message}`;
-                statusElement.className = "status-item status-error";
-            }
-        }
-        
-        function triggerBrowserDownload(url, filename) {
-            // ⭐️ 9. สร้างแท็ก <a> ล่องหน
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename; // บอกเบราว์เซอร์ว่านี่คือไฟล์ดาวน์โหลด
-            document.body.appendChild(a); // เพิ่มลงในหน้า
-            a.click(); // สั่งคลิก
-            document.body.removeChild(a); // ลบทิ้ง
-        }
     </script>
 
 </body>
