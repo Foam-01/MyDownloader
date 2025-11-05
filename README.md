@@ -1,4 +1,4 @@
-# 📦 MyDownloader
+<img width="1919" height="1078" alt="Screenshot 2025-11-05 113431" src="https://github.com/user-attachments/assets/5f922862-1d7e-415b-b7a6-ffad28d5d15f" /><img width="1917" height="964" alt="Screenshot 2025-11-05 113231" src="https://github.com/user-attachments/assets/b4f9d1b8-71d6-46b8-a7c7-daac938ee09f" /># 📦 MyDownloader
 
 A web application for downloading videos from various websites like YouTube, Facebook Reels, etc., using `yt-dlp` as its core downloading engine.
 
@@ -20,11 +20,13 @@ This project uses a Python Flask backend and an HTML/JavaScript frontend for pas
 * ⚡ **Concurrent Downloads:** Supports downloading up to 5 files simultaneously.
 
 ## 🖥️ Screenshots
+<img width="1910" height="962" alt="Screenshot 2025-11-05 113352" src="https://github.com/user-attachments/assets/bc6e963e-6209-4d2c-9856-1cf29435dd7c" />
+<img width="1919" height="1078" alt="Screenshot 2025-11-05 113431" src="https://github.com/user-attachments/assets/59ea94e1-7967-4ea4-9a48-b3de3fc00101" />
+<img width="1917" height="964" alt="Screenshot 2025-11-05 113231" src="https://github.com/user-attachments/assets/ee1bf617-7419-4dba-acd6-38183de7d754" />
 
-*(Add screenshots of the application here. You can upload images to your GitHub repository and link them.)*
-
-## 🔗 Repository
-
+## 🔗 Demo & Repository
+- Live Demo: [https://your-live-demo-link.com ](https://oneclickdownload.netlify.app/) 
+- GitHub: [https://github.com/Foam-01/pos-inventory-system](https://github.com/Foam-01/MyDownloader)
 * **GitHub:** `https://github.com/Foam-01/MyDownloader`
 
 ## 🏁 Getting Started
