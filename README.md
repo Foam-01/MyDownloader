@@ -21,7 +21,7 @@ This project uses a Python Flask backend and an HTML/JavaScript frontend for pas
 
 ## 🖥️ Screenshots
 
-<img width="1914" height="910" alt="Screenshot 2025-11-05 135051" src="https://github.com/user-attachments/assets/bf29f087-e4f8-4c1c-85ec-df5a055fa79e" />
+<img width="1919" height="970" alt="image" src="https://github.com/user-attachments/assets/59df354d-832f-414f-8a52-4f30eb9c815d" />
 <img width="1917" height="913" alt="Screenshot 2025-11-05 135940" src="https://github.com/user-attachments/assets/7a2c7096-c0d8-4786-a24a-00a7ae4cffb8" />
 <img width="1917" height="923" alt="Screenshot 2025-11-05 140230" src="https://github.com/user-attachments/assets/c54a889b-ad51-4adb-86e2-b32c893784a8" />
 
