@@ -22,6 +22,8 @@ This project uses a Python Flask backend and an HTML/JavaScript frontend for pas
   | TikTok | `tiktok.com/@user/video/...`, `vt.tiktok.com/...` |
 
   Links from other sites are rejected with a clear error message.
+
+  > ⚠️ **YouTube works only when you run the app on your own computer.** YouTube blocks cloud servers (such as Render), so on the live demo YouTube links show "YouTube บล็อกเซิร์ฟเวอร์ชั่วคราว" instead. Facebook and TikTok work on the live demo.
 * 💾 **Save to Downloads:** Automatically saves completed files to the user's "Downloads" folder.
 * 📊 **Real-time Progress:** Displays progress bars and status (downloading/finished/failed) on the web page.
 * ⚡ **Concurrent Downloads:** Supports downloading up to 10 files simultaneously.
