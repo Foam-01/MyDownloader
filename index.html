@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OneClickDownload (v8)</title>
+    <title>OneClickDownload (v9)</title>
 
     
     
@@ -41,7 +41,7 @@
         }
         .input-grid-container {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 0.75rem;
         }
         .form-group { margin-bottom: 0; }
@@ -112,6 +112,8 @@
         .progress-bar.status-downloading { background-color: #007bff; }
         .progress-bar.status-finished { background-color: #28a745; }
         .progress-bar.status-error { background-color: #dc3545; }
+        .empty-hint { color: #dc3545; text-align: center; }
+        .platforms { text-align: center; color: #6c757d; font-size: 0.9rem; margin: -10px 0 20px; }
     </style>
 </head>
 <body>
@@ -120,25 +122,21 @@
         
         <h2>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            OneClickDownload (v8)
+            OneClickDownload (v9)
         </h2>
+        <p class="platforms">รองรับ: Facebook · YouTube · TikTok</p>
         
         <div class="input-grid-container">
-            <div class="form-group"><input type="text" id="urlInput1" placeholder="วางลิงก์ (URL) ที่ 1"></div>
-            <div class="form-group"><input type="text" id="urlInput2" placeholder="วางลิงก์ (URL) ที่ 2"></div>
-            <div class="form-group"><input type="text" id="urlInput3" placeholder="วางลิงก์ (URL) ที่ 3"></div>
-            <div class="form-group"><input type="text" id="urlInput4" placeholder="วางลิงก์ (URL) ที่ 4"></div>
-            <div class="form-group"><input type="text" id="urlInput5" placeholder="วางลิงก์ (URL) ที่ 5"></div>
-            <div class="form-group"><input type="text" id="urlInput6" placeholder="วางลิงก์ (URL) ที่ 6"></div>
-            <div class="form-group"><input type="text" id="urlInput7" placeholder="วางลิงก์ (URL) ที่ 7"></div>
-            <div class="form-group"><input type="text" id="urlInput8" placeholder="วางลิงก์ (URL) ที่ 8"></div>
-            <div class="form-group"><input type="text" id="urlInput9" placeholder="วางลิงก์ (URL) ที่ 9"></div>
-            <div class="form-group"><input type="text" id="urlInput10" placeholder="วางลิงก์ (URL) ที่ 10"></div>
-            <div class="form-group"><input type="text" id="urlInput11" placeholder="วางลิงก์ (URL) ที่ 11"></div>
-            <div class="form-group"><input type="text" id="urlInput12" placeholder="วางลิงก์ (URL) ที่ 12"></div>
-            <div class="form-group"><input type="text" id="urlInput13" placeholder="วางลิงก์ (URL) ที่ 13"></div>
-            <div class="form-group"><input type="text" id="urlInput14" placeholder="วางลิงก์ (URL) ที่ 14"></div>
-            <div class="form-group"><input type="text" id="urlInput15" placeholder="วางลิงก์ (URL) ที่ 15"></div>
+            <div class="form-group"><input type="text" id="urlInput1" placeholder="วางลิงก์ที่ 1"></div>
+            <div class="form-group"><input type="text" id="urlInput2" placeholder="วางลิงก์ที่ 2"></div>
+            <div class="form-group"><input type="text" id="urlInput3" placeholder="วางลิงก์ที่ 3"></div>
+            <div class="form-group"><input type="text" id="urlInput4" placeholder="วางลิงก์ที่ 4"></div>
+            <div class="form-group"><input type="text" id="urlInput5" placeholder="วางลิงก์ที่ 5"></div>
+            <div class="form-group"><input type="text" id="urlInput6" placeholder="วางลิงก์ที่ 6"></div>
+            <div class="form-group"><input type="text" id="urlInput7" placeholder="วางลิงก์ที่ 7"></div>
+            <div class="form-group"><input type="text" id="urlInput8" placeholder="วางลิงก์ที่ 8"></div>
+            <div class="form-group"><input type="text" id="urlInput9" placeholder="วางลิงก์ที่ 9"></div>
+            <div class="form-group"><input type="text" id="urlInput10" placeholder="วางลิงก์ที่ 10"></div>
         </div>
         
         <button id="downloadAllButton">ดาวน์โหลดทั้งหมด</button>
@@ -152,25 +150,65 @@
         
         const downloadAllButton = document.getElementById("downloadAllButton");
         const statusArea = document.getElementById("statusArea");
-        const apiUrl = "https://mydownloader-8iq3.onrender.com"; 
+        // รันในเครื่อง (localhost) ให้เรียก API ของเซิร์ฟเวอร์ตัวเอง, ไม่งั้นใช้เซิร์ฟเวอร์บน Render
+        const apiUrl = ["localhost", "127.0.0.1"].includes(location.hostname)
+            ? ""
+            : "https://mydownloader-8iq3.onrender.com";
+
+        // แพลตฟอร์มที่รองรับ (ต้องตรงกับ SUPPORTED_PLATFORMS ใน app.py)
+        const SUPPORTED_PLATFORMS = {
+            "Facebook": ["facebook.com", "fb.watch", "fb.com"],
+            "YouTube": ["youtube.com", "youtu.be"],
+            "TikTok": ["tiktok.com"],
+        };
+
+        function detectPlatform(url) {
+            let host;
+            try { host = new URL(url).hostname.toLowerCase(); } catch { return null; }
+            for (const [name, domains] of Object.entries(SUPPORTED_PLATFORMS)) {
+                if (domains.some(d => host === d || host.endsWith("." + d))) return name;
+            }
+            return null;
+        }
+
+        // นับจำนวนงานทั้งหมด ใช้ทำ id ไม่ให้ซ้ำ (กดปุ่มซ้ำ / ใช้ช่องเดิมซ้ำ ระหว่างที่ยังโหลดอยู่)
+        let jobCounter = 0;
 
         downloadAllButton.addEventListener("click", function() {
-            statusArea.innerHTML = "<h4>สถานะการดาวน์โหลด:</h4>";
-            
-            for (let i = 1; i <= 15; i++) {
+            const urls = [];
+            for (let i = 1; i <= 10; i++) {
                 const urlInput = document.getElementById(`urlInput${i}`);
                 const url = urlInput.value.trim();
                 if (url) {
-                    startFetchDownload(url, i);
+                    urls.push([url, i]);
                     urlInput.value = "";
                 }
             }
+
+            if (urls.length === 0) {
+                alertEmpty();
+                return;
+            }
+
+            // ไม่ล้างรายการเดิม เพื่อให้ไฟล์ที่กำลังโหลดอยู่ยังเห็นสถานะต่อ
+            if (!statusArea.querySelector("h4")) {
+                statusArea.insertAdjacentHTML('afterbegin', "<h4>สถานะการดาวน์โหลด:</h4>");
+            }
+            statusArea.querySelector(".empty-hint")?.remove();
+            urls.forEach(([url, i]) => startFetchDownload(url, i));
         });
+
+        function alertEmpty() {
+            if (!statusArea.querySelector(".empty-hint")) {
+                statusArea.insertAdjacentHTML('beforeend', '<p class="empty-hint">กรุณาวางลิงก์อย่างน้อย 1 ช่อง</p>');
+            }
+        }
 
         async function startFetchDownload(url, slotIndex) {
             // 1. สร้าง HTML สำหรับ Progress Bar
-            const barId = `progress-bar-${slotIndex}`;
-            const textId = `progress-text-${slotIndex}`;
+            const jobId = ++jobCounter;
+            const barId = `progress-bar-${jobId}`;
+            const textId = `progress-text-${jobId}`;
 
             const itemHtml = `
                 <div class="progress-item">
@@ -185,6 +223,17 @@
             const progressBar = document.getElementById(barId);
             const progressText = document.getElementById(textId);
 
+            const platform = detectPlatform(url);
+            if (!platform) {
+                progressBar.className = "progress-bar status-error";
+                progressText.textContent = `[ล้มเหลว] (ช่อง ${slotIndex}) - รองรับเฉพาะลิงก์ Facebook, YouTube และ TikTok`;
+                return;
+            }
+
+            if (platform === "YouTube") {
+                progressText.textContent = `(ช่อง ${slotIndex}) เซิร์ฟเวอร์กำลังเตรียมไฟล์ YouTube (อาจใช้เวลาสักครู่)...`;
+            }
+
             try {
                 // 2. สร้าง URL สำหรับเรียก API
                 const downloadUrl = `${apiUrl}/download_video?url=${encodeURIComponent(url)}`;
@@ -193,7 +242,9 @@
                 const response = await fetch(downloadUrl);
 
                 if (!response.ok) {
-                    throw new Error(`เซิร์ฟเวอร์ล้มเหลว (Error ${response.status})`);
+                    let message = `เซิร์ฟเวอร์ล้มเหลว (Error ${response.status})`;
+                    try { message = (await response.json()).error || message; } catch {}
+                    throw new Error(message);
                 }
 
                 // 4. ดึงขนาดไฟล์ทั้งหมด (ถ้ามี)
@@ -215,7 +266,7 @@
                     }
                 }
                 
-                progressText.textContent = `[กำลังโหลด] ${filename}`;
+                progressText.textContent = `[กำลังโหลด] (${platform}) ${filename}`;
 
                 // 6. อ่านไฟล์ที่สตรีมมา (เพื่อคำนวณ %)
                 const reader = response.body.getReader();
