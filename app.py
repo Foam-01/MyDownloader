@@ -63,6 +63,21 @@ BASE_YDL_OPTS = {
 }
 
 
+def friendly_error(message, platform):
+    """แปลง error ของ yt-dlp (ภาษาอังกฤษยาว ๆ) เป็นข้อความที่ผู้ใช้อ่านเข้าใจ"""
+    lower = message.lower()
+    if 'not a bot' in lower or 'sign in to confirm' in lower:
+        return f"{platform} บล็อกเซิร์ฟเวอร์ชั่วคราว กรุณาลองใหม่ภายหลัง"
+    if 'private' in lower or 'login' in lower or 'log in' in lower:
+        return "วิดีโอนี้เป็นแบบส่วนตัวหรือต้องล็อกอิน จึงดาวน์โหลดไม่ได้"
+    if 'unavailable' in lower or 'not available' in lower or 'removed' in lower or 'does not exist' in lower:
+        return "ไม่พบวิดีโอนี้ (อาจถูกลบหรือลิงก์ไม่ถูกต้อง)"
+    if '403' in lower or '429' in lower:
+        return f"{platform} ปฏิเสธการดาวน์โหลดชั่วคราว กรุณาลองใหม่ภายหลัง"
+    # อื่น ๆ: ตัด "ERROR: [youtube] abc123: " ข้างหน้าออก
+    return re.sub(r'^ERROR:\s*(\[[^\]]+\]\s*[^:]*:\s*)?', '', message)
+
+
 @app.route('/download_video')
 def download_video():
     url = request.args.get('url') 
@@ -82,7 +97,7 @@ def download_video():
         return stream_direct(url)
     except Exception as e:
         print(f"yt-dlp ({platform}) เกิดข้อผิดพลาด: {e}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": friendly_error(str(e), platform)}), 500
 
 
 def download_youtube(url):
